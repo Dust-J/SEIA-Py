@@ -18,3 +18,4 @@ Simple Experimental Image Analyzer - Python
 - Flame test
 - Observation of cells with a microscope
 - Observation of minerals and rocks
+- Observation of minerals and rocks
