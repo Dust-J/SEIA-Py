@@ -50,10 +50,8 @@ class MdiSub(QMainWindow):
         global dot
         dot=[]
         
-    def loadImage(self, fileName):
-        im = plt.imread(fileName)
-        self.im = np.flipud(im)
-        self.ax.imshow(self.im, origin='lower')
+    def loadImage(self, fileName): 
+        self.imageShow(plt.imread(fileName))
         self.setWindowTitle(fileName)
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.canvas.draw()
@@ -63,10 +61,8 @@ class MdiSub(QMainWindow):
     
     def loadVideo(self, image, cnt):
         b, g, r = cv2.split(image)
-        im = cv2.merge([r,g,b])
-        self.im = np.flipud(im)
+        self.imageShow(cv2.merge([r,g,b]))
         self.setWindowTitle(str(int(cnt)))
-        self.ax.imshow(self.im, origin='lower')
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.canvas.draw()
         QApplication.restoreOverrideCursor()
@@ -78,7 +74,7 @@ class MdiSub(QMainWindow):
         if ok:
             self.im = ndimage.rotate(self.im, angle)
         self.ax.clear()
-        self.ax.imshow(self.im)
+        self.imageShow(self.im)
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.canvas.draw()
         QApplication.restoreOverrideCursor()
@@ -86,7 +82,7 @@ class MdiSub(QMainWindow):
     def select(self):
         self.im = self.im[int(self.y1):int(self.y2), int(self.x1):int(self.x2)]
         self.ax.clear()
-        self.ax.imshow(self.im)
+        self.imageShow(self.im)
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.canvas.draw()
         QApplication.restoreOverrideCursor()
@@ -164,6 +160,10 @@ class MdiSub(QMainWindow):
         
     def color(self):
         self.cid = self.canvas.mpl_connect('button_press_event', self.onclick4)
+        
+    def imageShow(self, im):
+        self.im = np.flipud(im)
+        self.ax.imshow(self.im, origin='lower')
     
         
 class MainWindow(QMainWindow, form_class):
