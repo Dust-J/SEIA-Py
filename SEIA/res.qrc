@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>icon/measuring.png</file>
+    <file>icon/file.png</file>
+    <file>icon/placeholder.png</file>
+    <file>icon/line-chart.png</file>
+    <file>icon/angle.png</file>
+    <file>icon/circular-graphic.png</file>
+    <file>icon/crop.png</file>
+    <file>icon/folder.png</file>
+    <file>icon/rotate-left.png</file>
+    <file>icon/save.png</file>
+  </qresource>
+</RCC>
