@@ -51,7 +51,8 @@ class MdiSub(QMainWindow):
         dot=[]
         
     def loadImage(self, fileName): 
-        self.imageShow(plt.imread(fileName))
+        b, g, r = cv2.split(cv2.imread(fileName))
+        self.imageShow(cv2.merge([r,g,b]))
         self.setWindowTitle(fileName)
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.canvas.draw()
@@ -154,7 +155,12 @@ class MdiSub(QMainWindow):
         
     def onclick4(self, event):
         if event.xdata and event.ydata:
-            print(self.im[int(event.xdata), int(event.ydata)])
+            x, y = int(event.xdata), int(event.ydata)
+            r, g, b = cv2.split(self.im)
+            L = self.rgb2lab([r[x, y], g[x, y], b[x, y]])
+            #print([r[x, y], g[x, y], b[x, y]])
+            #print(L)
+            self.statusBar().showMessage('L: %s, a: %s, b: %s'%(L[0], L[1], L[2]))
             win.actionColor.setChecked(False)
             #self.canvas.mpl_disconnect(self.cid)
         
@@ -164,6 +170,29 @@ class MdiSub(QMainWindow):
     def imageShow(self, im):
         self.im = np.flipud(im)
         self.ax.imshow(self.im, origin='lower')
+        
+    def rgb2lab(self, C):
+        C=[float(i)/255 for i in C]
+        for i in range(3):
+            if C[i] > 0.04045: C[i] =((C[i] + 0.055)/1.055) ** 2.4
+            else: C[i] = C[i] / 12.92
+        C=[i*100 for i in C]
+        x = C[0]*0.4124 + C[1]*0.3576 + C[2]*0.1805
+        y = C[0]*0.2126 + C[1]*0.7152 + C[2]*0.0722
+        z = C[0]*0.0193 + C[1]*0.1192 + C[2]*0.9505
+        X = [x, y, z]
+        L = [95.047, 100.0, 108.883]
+        X=[round(X[i], 4)/L[i] for i in range(3)]
+        for i in range(3):
+            if X[i] > 0.008856: X[i]=X[i]**(0.3333333333333333)
+            else: X[i] = (7.787*X[i]) + (16/116)
+        L[0] = (116* X[1])-16
+        L[1] = 500*( X[0]- X[1])
+        L[2] = 200*( X[1]- X[2])
+        L=[round(i, 4) for i in L]
+        return L
+        
+        
     
         
 class MainWindow(QMainWindow, form_class):
